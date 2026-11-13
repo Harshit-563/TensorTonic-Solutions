@@ -1,18 +1,41 @@
-def train_logistic_regression(X, y, lr=0.1, steps=1000):
+import numpy as np
+
+def _sigmoid(z: np.ndarray) -> np.ndarray:
     """
-    Train logistic regression via gradient descent.
-    Return (w, b).
+    Returns elementwise sigmoid values.
     """
-    X = np.asarray(X, float)
-    y = np.asarray(y, float)
-    N, D = X.shape
-    w = np.zeros(D)
+    return np.where(z >= 0,
+                    1 / (1 + np.exp(-z)),
+                    np.exp(z) / (1 + np.exp(z)))
+
+def train_logistic_regression(
+    X: np.ndarray,
+    y: np.ndarray,
+    lr: float = 0.1,
+    steps: int = 1000
+) -> tuple[np.ndarray, float]:
+    """
+    Returns the trained weights and bias as (w, b).
+    """
+    n_samples, n_features = X.shape
+
+    w = np.zeros(n_features)
     b = 0.0
+
     for _ in range(steps):
-        logits = X @ w + b
-        preds = _sigmoid(logits)
-        grad_w = X.T @ (preds - y) / N
-        grad_b = np.mean(preds - y)
-        w -= lr * grad_w
-        b -= lr * grad_b
+        # Linear predictions
+        z = X @ w + b
+
+        # Predicted probabilities
+        y_hat = _sigmoid(z)
+
+        # Gradients
+        error = y_hat - y
+        dw = (X.T @ error) / n_samples
+        db = np.mean(error)
+
+        # Parameter update
+        w -= lr * dw
+        b -= lr * db
+
     return w, b
