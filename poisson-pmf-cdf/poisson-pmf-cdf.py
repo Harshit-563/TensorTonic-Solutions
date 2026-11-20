@@ -4,11 +4,9 @@ def poisson_pmf_cdf(lam: float, k: int) -> dict:
     """
     Returns a dictionary with pmf and cdf.
     """
-    # Write code here
-    pmf = math.exp(-lam)*(lam**k)/math.factorial(k)
+    p = math.exp(-1*lam)*(lam)**k/math.factorial(k)
     cdf = 0.0
-    for i in range(0,k+1):
-        cdf+=math.exp(-lam)*(lam**i)/math.factorial(i)
-    return {'pmf':pmf,'cdf':cdf}    
-    
+    for i in range(k+1):
+        cdf +=  math.exp(-1*lam)*(lam)**i/math.factorial(i)
+    return  { "pmf": p, "cdf": cdf}  
     
